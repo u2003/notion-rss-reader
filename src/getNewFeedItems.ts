@@ -6,7 +6,7 @@ const parser = new Parser()
 export const getNewFeedItems = async (feedUrl: string) => {
   const { items: newFeedItems } = await parser.parseURL(feedUrl)
 
-  // updated: only parse the new feed items created today
+  //updated: only parse the new feed items created today
   return newFeedItems.filter((feedItem) => {
     const { pubDate } = feedItem
 
@@ -17,3 +17,5 @@ export const getNewFeedItems = async (feedUrl: string) => {
     return diffInHours === 0
   })
 }
+
+export default getNewFeedItems

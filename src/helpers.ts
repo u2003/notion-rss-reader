@@ -7,3 +7,5 @@ export const timeDifference = (publishedDate: number) => {
     diffInHours,
   }
 }
+
+export default timeDifference
