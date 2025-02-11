@@ -1,6 +1,4 @@
 import { Client } from '@notionhq/client'
-import { CreatePageParameters } from '@notionhq/client/build/src/api-endpoints'
-import ogp from 'ogp-parser'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TODO = any
@@ -14,7 +12,7 @@ export const addFeedItems = async (
   const databaseId = process.env.NOTION_READER_DATABASE_ID || ''
 
   newFeedItems.forEach(async (item) => {
-    const { title, link, enclosure, pubDate } = item
+    const { title, link, pubDate } = item
     const domain = link?.match(/^https?:\/{2,}(.*?)(?:\/|\?|#|$)/)
 
     const properties: TODO = {
@@ -46,45 +44,14 @@ export const addFeedItems = async (
       },
     }
 
-    const ogpImage = link
-      ? await ogp(link).then((data) => {
-          const imageList = data.ogp['og:image']
-          return imageList ? imageList[0] : null
-        })
-      : ''
-
-    const children: CreatePageParameters['children'] = enclosure
-      ? [
-          {
-            type: 'image',
-            image: {
-              type: 'external',
-              external: {
-                url: enclosure?.url,
-              },
-            },
-          },
-        ]
-      : ogpImage
-      ? [
-          {
-            type: 'image',
-            image: {
-              type: 'external',
-              external: {
-                url: ogpImage,
-              },
-            },
-          },
-        ]
-      : []
+    console.log('准备创建页面，属性:', properties)
 
     try {
-      await notion.pages.create({
+      const response = await notion.pages.create({
         parent: { database_id: databaseId },
         properties,
-        children,
       })
+      console.log('页面创建成功，响应:', response)
     } catch (error) {
       console.error(error)
     }

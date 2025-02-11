@@ -2,7 +2,7 @@ name: Feed Cron
 
 on:
   schedule:
-    - cron: "0 * * * *" # UTC
+    - cron: "0 8,22 * * *" # UTC+8 时区的 4:00am 和 18:00
   workflow_dispatch:
 
 jobs:
